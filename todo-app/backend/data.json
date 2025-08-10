@@ -1,0 +1,19 @@
+{
+    "id": 1,
+    "title": "Initialize frontend with Vite and React", 
+    "description": "Set up the frontend using Vite...",
+    "completed": false,
+    "subtasks": [
+        {
+            "id": 2,
+            "title": "Install Vite",
+            "description": "",
+            "completed": false,
+            "subtasks": [],
+            "created_at": "2023-10-01T12:00:00Z",
+            "updated_at": "2023-10-01T12:00:00Z"
+        }
+    ],
+    "created_at": "2023-10-01T12:00:00Z", 
+    "updated_at": "2023-10-01T12:00:00Z"
+}
