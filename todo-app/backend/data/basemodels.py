@@ -18,7 +18,7 @@ class SectionModel(BaseModel):
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
 
-class ConfigModel(BaseModel):
+class TodoModel(BaseModel):
     version: str = "1.0"
     created_at: datetime = Field(default_factory=datetime.now)
     last_updated: datetime = Field(default_factory=datetime.now)

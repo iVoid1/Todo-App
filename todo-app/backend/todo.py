@@ -2,17 +2,17 @@ import json
 from pathlib import Path
 from typing import List, Optional, Dict
 from datetime import datetime
-from data import ConfigModel
-from classes import Task, Section
+from .data import TodoModel
+from .data import Task, Section
 
-class Config:
-    def __init__(self, file_path: str = "todo_data.json"):
+class Todo:
+    def __init__(self, file_path: str):
         self.file_path = Path(file_path)
-        self.data = ConfigModel()
+        self.data = TodoModel()
         # Indexes for fast lookup
         self.task_index: Dict[str, Task] = {}
         self.section_index: Dict[str, Section] = {}
-        
+        #set json file
         self.load_from_file()
         self._build_indexes()
 
@@ -44,7 +44,7 @@ class Config:
                     self._create_default_file()
                     return True
                 
-                self.data = ConfigModel.model_validate(data)
+                self.data = TodoModel.model_validate(data)
                 print("Data loaded successfully")
             return True
             
@@ -79,7 +79,7 @@ class Config:
         """Create file with default data"""
         try:
             # Create default data
-            self.data = ConfigModel()
+            self.data = TodoModel()
             self._update_timestamp()
             
             # Create directory if it doesn't exist

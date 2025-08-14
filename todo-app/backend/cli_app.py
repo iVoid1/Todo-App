@@ -1,12 +1,12 @@
 import os
 import sys
-from data.config import Config
-from classes import Task
+from todo import Todo
+from data import Task
 
 class CliApp:
-    def __init__(self, config_file: str = "todo_data.json"):
+    def __init__(self, todo_file: str = "todo_data.json"):
         """Initialize the application"""
-        self.config = Config(config_file)
+        self.config = Todo(todo_file)
         self.running = True
 
 # ======== menu methods ========    

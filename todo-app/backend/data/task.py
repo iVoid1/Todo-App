@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from data import TaskModel
+from . import TaskModel
 
 
 class Task(TaskModel):  

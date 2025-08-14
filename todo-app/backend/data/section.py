@@ -1,5 +1,5 @@
-from classes import Task
-from data import SectionModel
+from .task import Task
+from . import SectionModel
 
 
 class Section(SectionModel):
