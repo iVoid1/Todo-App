@@ -1,7 +1,7 @@
 import os
 import sys
-from .app import TodoApp
-from ..models import Task
+from app import TodoApp
+from models import Task
 
 class CliApp:
     def __init__(self, todo_file: str = "todo_data.json"):

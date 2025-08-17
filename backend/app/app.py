@@ -14,8 +14,7 @@ class TodoApp:
         self.task_index: Dict[str, Task] = {}
         self.section_index: Dict[str, Section] = {}
         #set json file
-        self.load_from_file()
-        self._build_indexes()
+        self.reload()
 
 
 #======= file operations ========
@@ -81,7 +80,6 @@ class TodoApp:
         try:
             # Create default data
             self.model = TodoModel()
-            self._update_timestamp()
             
             # Create directory if it doesn't exist
             self.file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -137,14 +135,12 @@ class TodoApp:
         
         section.add_task(task)
         
-        self.add_section(section)
         self.save_to_file()
         return True
     
     def add_section(self, section: Section):
         """Add a new section"""
         self.model.sections.append(section)
-        self.save_to_file()
     
     def remove_task_by_id(self, task_id: str) -> bool:
         """Remove task by ID"""
