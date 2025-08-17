@@ -13,6 +13,7 @@ class TaskModel(BaseModel):
     updated_at: datetime = Field(default_factory=datetime.now)
 
 class SectionModel(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4())[:8])
     name: str
     tasks: List['TaskModel'] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=datetime.now)

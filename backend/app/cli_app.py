@@ -82,10 +82,10 @@ class CliApp:
 
         if section_choice.lower() == 'n':
             section_name = self.get_user_input("➕ Create New Section", "Enter a name for the new section:")
-            self.config.create_section(section_name)
             return section_name
+        
         elif section_choice.isdigit() and 1 <= int(section_choice) <= len(self.config.model.sections):
-            return self.config.model.sections[int(section_choice) - 1].name
+            return self.config.model.sections[int(section_choice) - 1].id
         else:
             return "General"
         
@@ -93,7 +93,7 @@ class CliApp:
         """List tasks by section"""
         self.clear_screen()
         section_name = self.select_section()
-        section = self.config.get_section_by_name(section_name)
+        section = self.config.get_section(section_name)
         
         if not section:
             print(f"No tasks found in section '{section_name}'.")
@@ -156,6 +156,7 @@ class CliApp:
         section_name = self.select_section()
         
         title = self.get_user_input("➕ Create New Task", "Enter task title:")
+
         description = input("Enter task description (optional): ").strip()
 
         task = Task(title=title, description=description)

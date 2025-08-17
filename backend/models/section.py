@@ -1,14 +1,12 @@
-from .task import Task
-from . import SectionModel
+from . import SectionModel, TaskModel
 
 
 class Section(SectionModel):
     
-    def add_task(self, task):
-        if isinstance(task, Task):
-            self.tasks.append(task)
+    def add_task(self, task: TaskModel):
+        self.tasks.append(task)
     
-    def remove_task(self, task):
+    def remove_task(self, task: TaskModel):
         if task in self.tasks:
             self.tasks.remove(task)
     

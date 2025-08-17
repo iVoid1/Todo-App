@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List, Optional, Dict
 from datetime import datetime
 
-from models import TodoModel
+from models import TodoModel, TaskModel, SectionModel
 from models import Task, Section
 
 class TodoApp:
@@ -67,7 +67,7 @@ class TodoApp:
         
         for section_data in self.model.sections:
             section = Section.model_validate(section_data.model_dump())
-            self.section_index[section.name] = section
+            self.section_index[section.id] = section
             
             for task in section.tasks:
                 self.task_index[task.id] = Task.model_validate(task.model_dump())
@@ -90,15 +90,24 @@ class TodoApp:
             
         except Exception as e:
             print(f"Error creating default file: {e}")
-    
+    def _sync_indexes_to_model(self):
+        """Sync indexes to model"""
+        self.model.sections.clear()
+        for section in self.section_index.values():           
+            section_model = SectionModel.model_validate(section.model_dump())
+            self.add_section(section_model)
+
     def save_to_file(self):
         """Save data to JSON file"""
         try:
             # Create directory if it doesn't exist
             self.file_path.parent.mkdir(parents=True, exist_ok=True)
             
+            self._sync_indexes_to_model()
+            
             with open(self.file_path, 'w', encoding='utf-8') as f:
                 json.dump(self.model.model_dump(), f, ensure_ascii=False, indent=4, default=str)
+                
             self.reload()  # Rebuild indexes after save
             self._update_timestamp()
             return True
@@ -122,23 +131,23 @@ class TodoApp:
             return self.section_index[name]
         
         section = Section(name=name)
-        self.add_section(section)
+        self.section_index[section.id] = section
+        self.save_to_file()
         return section
     
-    def add_task_to_section(self, task: Task, section_name: str):
+    def add_task_to_section(self, task: TaskModel, section_name: str):
         """Add task to a specific section"""
-        section = self.get_section_by_name(section_name) or self.create_section(section_name)
+        section = self.get_section(section_name) or self.create_section(section_name)
         
         if not section:
             print(f"Section '{section_name}' not found and couldn't be created")
             return False
         
         section.add_task(task)
-        
         self.save_to_file()
         return True
     
-    def add_section(self, section: Section):
+    def add_section(self, section: SectionModel):
         """Add a new section"""
         self.model.sections.append(section)
     
@@ -174,7 +183,7 @@ class TodoApp:
         """Get task by ID"""
         return self.task_index.get(task_id)
     
-    def get_section_by_name(self, name: str) -> Optional[Section]:
+    def get_section(self, name: str) -> Optional[Section]:
         """Get section by name"""
         return self.section_index.get(name)
     
