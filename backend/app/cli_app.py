@@ -1,12 +1,12 @@
 import os
 import sys
-from todo import Todo
-from data import Task
+from .app import TodoApp
+from ..models import Task
 
 class CliApp:
     def __init__(self, todo_file: str = "todo_data.json"):
         """Initialize the application"""
-        self.config = Todo(todo_file)
+        self.config = TodoApp(todo_file)
         self.running = True
 
 # ======== menu methods ========    
@@ -54,7 +54,7 @@ class CliApp:
         """Print all sections"""
         self.clear_screen()
         print("📂 Sections:")
-        for section in self.config.data.sections:
+        for section in self.config.model.sections:
             print(f"- {section.name} ({len(section.tasks)} tasks)")
         self.pause()
 
@@ -75,7 +75,7 @@ class CliApp:
         """Select a section by name"""
         self.clear_screen()
         print("📂 Select Section: ")
-        for i, section in enumerate(self.config.data.sections, start=1):
+        for i, section in enumerate(self.config.model.sections, start=1):
             print(f"{i}. {section.name}")
             
         section_choice = input("Enter section number (or 'n' for new section | default: General): ").strip()
@@ -84,8 +84,8 @@ class CliApp:
             section_name = self.get_user_input("➕ Create New Section", "Enter a name for the new section:")
             self.config.create_section(section_name)
             return section_name
-        elif section_choice.isdigit() and 1 <= int(section_choice) <= len(self.config.data.sections):
-            return self.config.data.sections[int(section_choice) - 1].name
+        elif section_choice.isdigit() and 1 <= int(section_choice) <= len(self.config.model.sections):
+            return self.config.model.sections[int(section_choice) - 1].name
         else:
             return "General"
         

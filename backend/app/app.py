@@ -2,13 +2,14 @@ import json
 from pathlib import Path
 from typing import List, Optional, Dict
 from datetime import datetime
-from .data import TodoModel
-from .data import Task, Section
 
-class Todo:
+from models import TodoModel
+from models import Task, Section
+
+class TodoApp:
     def __init__(self, file_path: str):
         self.file_path = Path(file_path)
-        self.data = TodoModel()
+        self.model = TodoModel()
         # Indexes for fast lookup
         self.task_index: Dict[str, Task] = {}
         self.section_index: Dict[str, Section] = {}
@@ -44,7 +45,7 @@ class Todo:
                     self._create_default_file()
                     return True
                 
-                self.data = TodoModel.model_validate(data)
+                self.model = TodoModel.model_validate(data)
                 print("Data loaded successfully")
             return True
             
@@ -65,7 +66,7 @@ class Todo:
         self.task_index.clear()
         self.section_index.clear()
         
-        for section_data in self.data.sections:
+        for section_data in self.model.sections:
             section = Section.model_validate(section_data.model_dump())
             self.section_index[section.name] = section
             
@@ -79,7 +80,7 @@ class Todo:
         """Create file with default data"""
         try:
             # Create default data
-            self.data = TodoModel()
+            self.model = TodoModel()
             self._update_timestamp()
             
             # Create directory if it doesn't exist
@@ -99,7 +100,7 @@ class Todo:
             self.file_path.parent.mkdir(parents=True, exist_ok=True)
             
             with open(self.file_path, 'w', encoding='utf-8') as f:
-                json.dump(self.data.model_dump(), f, ensure_ascii=False, indent=4, default=str)
+                json.dump(self.model.model_dump(), f, ensure_ascii=False, indent=4, default=str)
             self.reload()  # Rebuild indexes after save
             self._update_timestamp()
             return True
@@ -142,7 +143,7 @@ class Todo:
     
     def add_section(self, section: Section):
         """Add a new section"""
-        self.data.sections.append(section)
+        self.model.sections.append(section)
         self.save_to_file()
     
     def remove_task_by_id(self, task_id: str) -> bool:
@@ -168,7 +169,7 @@ class Todo:
             print(f"Section '{section_name}' not found")
             return False
         # 2. Remove section from data
-        self.data.sections.remove(section)
+        self.model.sections.remove(section)
         self.save_to_file()
         print(f"Removed section: {section_name}")
         return True
@@ -195,7 +196,7 @@ class Todo:
     
     def _update_timestamp(self):
         """Update last modified timestamp"""
-        self.data.last_updated = datetime.now()
+        self.model.last_updated = datetime.now()
     
     def reload(self):
         """Reload data from file"""
