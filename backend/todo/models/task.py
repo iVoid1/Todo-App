@@ -1,8 +1,17 @@
+from pydantic import BaseModel, Field
+from typing import List, Dict, Any, Optional
 from datetime import datetime
 
-from . import TaskModel
 
-
+class TaskModel(BaseModel):
+    title: str
+    description: str = ""
+    completed: bool = False
+    subtasks: List['Task'] = Field(default_factory=list)
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
+    
+    
 class Task(TaskModel):  
           
     def update_title(self, new_title: str):
@@ -18,15 +27,9 @@ class Task(TaskModel):
     def update_timestamp(self):
         self.updated_at = datetime.now()
    
-    def complete(self):
-        self.completed = True
+    def mark_task(self, complete: bool = True):
+        self.completed = complete
         self.update_timestamp()
-        return self
-   
-    def incomplete(self):
-        self.completed = False
-        self.update_timestamp()
-        return self
            
     def is_fully_complete(self) -> bool:
         return self.completed and all(subtask.completed for subtask in self.subtasks)
